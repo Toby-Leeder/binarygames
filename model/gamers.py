@@ -16,8 +16,7 @@ class Gamer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     _name = db.Column(db.String(255), unique=True, nullable=False)
     _password = db.Column(db.String(255), unique=False, nullable=False)
-    _bombScore = db.Column(db.Int, unique=False, nullable=True)
-    
+    _bombScore = db.Column(db.Integer, unique=False, nullable=True)
 
     # constructor of a User object, initializes the instance variables within object (self)
     def __init__(self, name, password="123qwerty", bomb=""):
@@ -34,6 +33,16 @@ class Gamer(db.Model):
     @name.setter
     def name(self, name):
         self._name = name
+
+    # a name getter method, extracts name from object
+    @property
+    def bomb(self):
+        return self._bomb
+    
+    # a setter function, allows name to be updated after initial object creation
+    @name.setter
+    def bomb(self, bomb):
+        self._bomb = bomb
     
     @property
     def password(self):
@@ -94,6 +103,8 @@ class Gamer(db.Model):
         db.session.commit()
         return None
 
+def getUser(name):
+    return Gamer.query.filter_by(_name = name).first()
 
 """Database Creation and Testing """
 
@@ -104,7 +115,7 @@ def initGamers():
         """Create database and tables"""
         db.create_all()
         """Tester data for table"""
-        u1 = Gamer(name='Thomas Edison', uid='toby', password='123toby', dob=date(1847, 2, 11))
+        u1 = Gamer(name='mouse', password='tiny')
 
         users = [u1]
 
