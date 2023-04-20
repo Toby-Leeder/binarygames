@@ -16,19 +16,25 @@ from api.covid import covid_api # Blueprint import api definition
 from api.joke import joke_api # Blueprint import api definition
 from api.user import user_api # Blueprint import api definition
 from api.gamer import gamer_api # Blueprint import api definition
+from api.login import login_api # Blueprint import api definition
 from api.player import player_api
 
 
 # setup App pages
 from projects.projects import app_projects # Blueprint directory import projects definition
 
-# register URIs
-app.register_blueprint(joke_api) # register api routes
-app.register_blueprint(covid_api) # register api routes
-app.register_blueprint(user_api) # register api routes
-app.register_blueprint(gamer_api) # register api routes
-app.register_blueprint(player_api)
-app.register_blueprint(app_projects) # register app pages
+apis = [joke_api, covid_api, user_api, gamer_api, login_api, player_api, app_projects]
+
+for api in apis:
+    app.register_blueprint(api)
+
+# # register URIs
+# app.register_blueprint(joke_api) # register api routes
+# app.register_blueprint(covid_api) # register api routes
+# app.register_blueprint(user_api) # register api routes
+# app.register_blueprint(gamer_api) # register api routes
+# app.register_blueprint(player_api)
+# app.register_blueprint(app_projects) # register app pages
 
 @app.errorhandler(404)  # catch for URL not found
 def page_not_found(e):
