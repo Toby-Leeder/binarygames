@@ -16,13 +16,13 @@ class Gamer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     _name = db.Column(db.String(255), unique=True, nullable=False)
     _password = db.Column(db.String(255), unique=False, nullable=False)
-    _bombScore = db.Column(db.Integer, unique=False, nullable=True)
+    _bomb = db.Column(db.Integer, unique=False, nullable=True)
 
     # constructor of a User object, initializes the instance variables within object (self)
-    def __init__(self, name, password="123qwerty", bomb=""):
+    def __init__(self, name, password="123qwerty", bomb=0):
         self._name = name    # variables with self prefix become part of the object, 
-        self.set_password(password)
         self._bomb = bomb
+        self.set_password(password)
 
     # a name getter method, extracts name from object
     @property
@@ -82,7 +82,8 @@ class Gamer(db.Model):
         return {
             "id": self.id,
             "name": self.name,
-            "bomb": self.bomb
+            "pass": self.password,
+            "bomb": self._bomb
         }
 
     # CRUD update: updates user name, password, phone
