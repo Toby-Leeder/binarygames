@@ -25,6 +25,9 @@ from projects.projects import app_projects # Blueprint directory import projects
 
 apis = [joke_api, covid_api, user_api, gamer_api, login_api, player_api, app_projects]
 
+# Initialize the SQLAlchemy object to work with the Flask app instance
+db.init_app(app)
+
 for api in apis:
     app.register_blueprint(api)
 
@@ -49,9 +52,7 @@ def index():
 def stub():
     return render_template("stub.html")
 
-@app.before_first_request
 def activate_job():  # activate these items 
-    db.init_app(app)
     initJokes()
     initUsers()
     initGamers()
