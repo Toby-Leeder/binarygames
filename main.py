@@ -52,6 +52,7 @@ def index():
 def stub():
     return render_template("stub.html")
 
+@app.before_first_request
 def activate_job():  # activate these items 
     initJokes()
     initUsers()
