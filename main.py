@@ -5,15 +5,12 @@ from flask import render_template  # import render_template from "public" flask 
 
 # import "packages" from "this" project
 from __init__ import app,db  # Definitions initialization
-from model.jokes import initJokes
 from model.users import initUsers
 from model.players import initPlayers
 from model.gamers import initGamers
 
 
 # setup APIs
-from api.covid import covid_api # Blueprint import api definition
-from api.joke import joke_api # Blueprint import api definition
 from api.user import user_api # Blueprint import api definition
 from api.gamer import gamer_api # Blueprint import api definition
 from api.login import login_api # Blueprint import api definition
@@ -23,7 +20,7 @@ from api.player import player_api
 # setup App pages
 from projects.projects import app_projects # Blueprint directory import projects definition
 
-apis = [joke_api, covid_api, user_api, gamer_api, login_api, player_api, app_projects]
+apis = [user_api, gamer_api, login_api, player_api, app_projects]
 
 # Initialize the SQLAlchemy object to work with the Flask app instance
 db.init_app(app)
@@ -54,7 +51,6 @@ def stub():
 
 @app.before_first_request
 def activate_job():  # activate these items 
-    initJokes()
     initUsers()
     initGamers()
     initPlayers()
