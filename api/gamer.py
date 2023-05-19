@@ -49,6 +49,30 @@ class GamerAPI:
             json_ready = [user.read() for user in users]  # prepare output in json
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
     
+    class _Delete(Resource):
+        def delete(self):
+            body = request.get_json()
+
+            user = getUser(body.get("name"))
+
+            password = body.get(password)
+
+            if not user.is_password(password):
+                return {'message': f"incorrect password"}, 400
+            else:
+                user.delete()
+                return f"{user.read()} has been deleted", 200
+            
+    class _Update(Resource):
+        def update(self):
+            body = request.get_json() # get the body of the request
+            data = body.get('data')
+            user = getUser(body.get("name")) # get the player (using the uid in this case)
+            user.update(data)
+            return f"{user.read()} Updated"
+
+
+
     class _Security(Resource):
 
         def post(self):
@@ -63,7 +87,7 @@ class GamerAPI:
                 return {'message': f"invalid username"}, 400
             
             if not user.is_password(password):
-                return {'message': f"wrong password"}, 400
+                return {'message': f"incorrect password"}, 400
 
             ''' authenticated user '''
             return jsonify(user.read())
@@ -72,6 +96,8 @@ class GamerAPI:
 
     # building RESTapi endpoint
     api.add_resource(_Create, '/create')
+    api.add_resource(_Delete, '/delete')
+    api.add_resource(_Update, '/update')
     api.add_resource(_Read, '/')
     api.add_resource(_Security, '/authenticate')
     
