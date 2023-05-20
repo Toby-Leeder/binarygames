@@ -88,12 +88,14 @@ class Gamer(db.Model):
 
     # CRUD update: updates user name, password, phone
     # returns self
-    def update(self, name="", password=""):
-        """only updates values with length"""
-        if len(name) > 0:
-            self.name = name
-        if len(password) > 0:
-            self.set_password(password)
+    def update(self, dictionary):
+        for key in dictionary:
+            if key == "name":
+                self.name = dictionary[key]
+            if key == "bomb":
+                self._bomb = dictionary[key]
+            if key == "pass":
+                self.set_password(dictionary[key])
         db.session.commit()
         return self
 
