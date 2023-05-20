@@ -110,10 +110,10 @@ class GamerAPI:
             password = body.get('password')
 
             if user is None:
-                return {'message': f"invalid username"}, 400
+                return {'message': "invalid username"}, 400
             
             if not user.is_password(password):
-                return {'message': f"incorrect password"}, 400
+                return {'message': "incorrect password"}, 400
 
             ''' authenticated user '''
             return jsonify(user.read())
