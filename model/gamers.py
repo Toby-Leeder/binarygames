@@ -19,7 +19,7 @@ class Gamer(db.Model):
     _bomb = db.Column(db.Integer, unique=False, nullable=True)
 
     # constructor of a User object, initializes the instance variables within object (self)
-    def __init__(self, name, password="123qwerty", bomb=0):
+    def __init__(self, name, password="123qwerty", bomb=362439):
         self._name = name    # variables with self prefix become part of the object, 
         self._bomb = bomb
         self.set_password(password)
