@@ -42,13 +42,35 @@ class GamerAPI:
             json_ready = [user.read() for user in users]  # prepare output in json
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
     
+    # class _Delete(Resource):
+    #     def delete(self):
+    #         body = request.get_json(force=True)
+
+    #         name = body.get("name")
+
+    #         password = body.get("pass")
+
+    #         if(not name):
+    #             return {'message': f"no name found"}, 400
+            
+    #         try:
+    #             user = getUser(name)
+    #             if not user:
+    #                 return {'message': 'User not found'}, 400
+    #         except ValueError:
+    #             return {'message': 'User not found'}, 400
+            
+    #         if user.is_password(password):
+    #             user.delete()
+    #             return f"{user.read()} has been deleted", 200
+    #         else:
+    #             return {'message': f"Incorrect password"}, 400
+            
     class _Delete(Resource):
         def delete(self):
             body = request.get_json(force=True)
 
             name = body.get("name")
-
-            password = body.get("pass")
 
             if(not name):
                 return {'message': f"no name found"}, 400
@@ -57,14 +79,12 @@ class GamerAPI:
                 user = getUser(name)
                 if not user:
                     return {'message': 'User not found'}, 400
+                else:
+                    user.delete()
             except ValueError:
                 return {'message': 'User not found'}, 400
-            
-            if user.is_password(password):
-                user.delete()
-                return f"{user.read()} has been deleted", 200
-            else:
-                return {'message': f"Incorrect password"}, 400
+                
+                
             
     class _Clear(Resource):
         def delete(self):
