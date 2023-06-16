@@ -16,3 +16,5 @@ venv.bak/
 volumes/sqlite.db
 instance/volumes/sqlite.db
 
+.DS_store
+
