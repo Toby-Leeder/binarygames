@@ -19,7 +19,7 @@ class Gamer(db.Model):
     _bomb = db.Column(db.Integer, unique=False, nullable=True)
 
     # constructor of a User object, initializes the instance variables within object (self)
-    def __init__(self, name, password="123qwerty", bomb=0):
+    def __init__(self, name, password="123qwerty", bomb=359999):
         self._name = name    # variables with self prefix become part of the object, 
         self._bomb = bomb
         self.set_password(password)
@@ -88,12 +88,14 @@ class Gamer(db.Model):
 
     # CRUD update: updates user name, password, phone
     # returns self
-    def update(self, name="", password=""):
-        """only updates values with length"""
-        if len(name) > 0:
-            self.name = name
-        if len(password) > 0:
-            self.set_password(password)
+    def update(self, dictionary):
+        for key in dictionary:
+            if key == "name":
+                self.name = dictionary[key]
+            if key == "bomb":
+                self._bomb = dictionary[key]
+            if key == "pass":
+                self.set_password(dictionary[key])
         db.session.commit()
         return self
 

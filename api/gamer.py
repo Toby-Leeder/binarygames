@@ -15,33 +15,26 @@ api = Api(gamer_api)
 class GamerAPI:        
     class _Create(Resource):
         def post(self):
-            ''' Read data for json body '''
             body = request.get_json()
-            
-            ''' Avoid garbage in, error checking '''
-            # validate name
-            name = body.get('name')
-            if name is None or len(name) < 2:
-                return {'message': f'Name is missing, or is less than 2 characters'}, 400
-            # look for password and dob
-            password = body.get('password')
 
-            ''' #1: Key code block, setup USER OBJECT '''
+            name = body.get('name')
+            if not name or len(name) < 2:
+                return {'message': 'Name is missing or less than 2 characters'}, 400
+
+            password = body.get('pass')
+
             uo = Gamer(name=name)
-            
-            ''' Additional garbage error checking '''
-            # set password if provided
-            if password is not None:
+
+            if password:
                 uo.set_password(password)
-            
-            ''' #2: Key Code block to add user to database '''
-            # create user in database
+
             user = uo.create()
-            # success returns json of user
+
             if user:
                 return jsonify(user.read())
-            # failure returns error
-            return {'message': f'Processed {name}, either a format error or is duplicate'}, 400
+            else:
+                return {'message': f'Error creating user {name}'}, 400
+
 
     class _Read(Resource):
         def get(self):
@@ -49,6 +42,65 @@ class GamerAPI:
             json_ready = [user.read() for user in users]  # prepare output in json
             return jsonify(json_ready)  # jsonify creates Flask response object, more specific to APIs than json.dumps
     
+    class _Delete(Resource):
+        def delete(self):
+            body = request.get_json(force=True)
+
+            name = body.get("name")
+
+            password = body.get("pass")
+
+            if(not name):
+                return {'message': f"no name found"}, 400
+            
+            try:
+                user = getUser(name)
+                if not user:
+                    return {'message': 'User not found'}, 400
+            except ValueError:
+                return {'message': 'User not found'}, 400
+            
+            if user.is_password(password):
+                user.delete()
+                return f"{user.read()} has been deleted", 200
+            else:
+                return {'message': f"Incorrect password"}, 400
+                
+                
+            
+    class _Clear(Resource):
+        def delete(self):
+            table = Gamer.query.all()
+            for user in table:
+                user.delete()
+
+            return {'message': f"Cleared the table"}, 200
+
+        
+
+    class _Update(Resource):
+        def put(self):
+            body = request.get_json()
+            password = body.get('pass')
+            data = body.get('data')
+            name = body.get('name')
+
+            try:
+                user = getUser(name)
+                if not user:
+                    return {'message': 'User not found'}, 400
+            except ValueError:
+                return {'message': 'User not found'}, 400
+
+            if user.is_password(password):
+                user.update(data)
+                return f"{user.read()} has been updated", 200
+            else:
+                return {'message': 'Incorrect password'}, 400
+
+
+
+
     class _Security(Resource):
 
         def post(self):
@@ -60,10 +112,10 @@ class GamerAPI:
             password = body.get('password')
 
             if user is None:
-                return {'message': f"invalid username"}, 400
+                return {'message': "invalid username"}, 400
             
             if not user.is_password(password):
-                return {'message': f"wrong password"}, 400
+                return {'message': "incorrect password"}, 400
 
             ''' authenticated user '''
             return jsonify(user.read())
@@ -72,6 +124,9 @@ class GamerAPI:
 
     # building RESTapi endpoint
     api.add_resource(_Create, '/create')
+    api.add_resource(_Delete, '/delete')
+    api.add_resource(_Update, '/update')
+    api.add_resource(_Clear, '/clear')
     api.add_resource(_Read, '/')
     api.add_resource(_Security, '/authenticate')
     
